@@ -125,6 +125,8 @@ namespace TravelMVC.Controllers
                 ModelState.AddModelError(string.Empty, "Server error. Please contact administrator.");
             }
         }
+
+        
         return View(destination);
     }
     [Authorize]
@@ -182,26 +184,33 @@ namespace TravelMVC.Controllers
     //   _db.SaveChanges();
     //   return RedirectToAction("Details", new {id = treat.TreatId});
     // }
-    // [Authorize]
-    // public async Task<ActionResult> Delete(int id)
-    // {
-    //   var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    //   var currentUser = await _userManager.FindByIdAsync(userId);
-    //   Treat thisTreat = _db.Treats.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(treats => treats.TreatId == id);
-    //   if (thisTreat == null)
-    //   {
-    //     return RedirectToAction("Details", new {id = id});
-    //   }
-    //   return View(thisTreat);
-    // }
-    // [HttpPost, ActionName("Delete")]
-    // public ActionResult DeleteConfirmed(int id)
-    // {
-    //   Treat thisTreat = _db.Treats.FirstOrDefault(treats => treats.TreatId == id);
-    //   _db.Treats.Remove(thisTreat);
-    //   _db.SaveChanges();
-    //   return RedirectToAction("Index");
-    // }
+    [Authorize]
+    public async Task<ActionResult> Delete(int id)
+    {
+        Destination destination = new Destination();
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.BaseAddress = new Uri("http://localhost:5000/api/");
+            using (var response = await httpClient.GetAsync("Destinations/" + id))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                destination = JsonConvert.DeserializeObject<Destination>(apiResponse);
+            }
+        }
+        return View(destination);
+    }
+    [HttpPost, ActionName("Delete")]
+    public async Task <ActionResult> DeleteConfirmed(int id)
+    {
+        using (var httpClient = new HttpClient())
+        {
+            using (var response = await httpClient.DeleteAsync("http://localhost:5000/api/Destinations/" + id))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+            }
+        } 
+        return RedirectToAction("Index");
+    }
     // [Authorize]
     // [HttpPost, ActionName("DeleteFlavor")]
     // public ActionResult DeleteFlavor(int joinId)

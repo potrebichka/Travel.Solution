@@ -1,0 +1,14 @@
+@model TravelMVC.Models.Destination
+
+<h2>Are you sure you want to delete this destination?</h2>
+
+<h3>@Html.DisplayNameFor(model => model.Country): @Html.DisplayFor(model => model.Country)</h3>
+<h3>@Html.DisplayNameFor(model => model.City): @Html.DisplayFor(model => model.City)</h3>
+@using (Html.BeginForm())
+{
+    <input type="submit" value="Delete" class="btn btn-danger"/>
+}
+
+<hr/>
+<h3>@Html.ActionLink("Back to destination", "Details", new {id = Model.DestinationId}, new { @class = "tab" } )</h3>
+<h3>@Html.ActionLink("Back to list of destinations", "Index", null, null, new { @class = "tab" } )</h3>

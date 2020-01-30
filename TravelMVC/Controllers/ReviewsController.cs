@@ -195,26 +195,33 @@ namespace TravelMVC.Controllers
     //   _db.SaveChanges();
     //   return RedirectToAction("Details", new {id = treat.TreatId});
     // }
-    // [Authorize]
-    // public async Task<ActionResult> Delete(int id)
-    // {
-    //   var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    //   var currentUser = await _userManager.FindByIdAsync(userId);
-    //   Treat thisTreat = _db.Treats.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(treats => treats.TreatId == id);
-    //   if (thisTreat == null)
-    //   {
-    //     return RedirectToAction("Details", new {id = id});
-    //   }
-    //   return View(thisTreat);
-    // }
-    // [HttpPost, ActionName("Delete")]
-    // public ActionResult DeleteConfirmed(int id)
-    // {
-    //   Treat thisTreat = _db.Treats.FirstOrDefault(treats => treats.TreatId == id);
-    //   _db.Treats.Remove(thisTreat);
-    //   _db.SaveChanges();
-    //   return RedirectToAction("Index");
-    // }
+    //    [Authorize]
+    public async Task<ActionResult> Delete(int id)
+    {
+        Review review = new Review();
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.BaseAddress = new Uri("http://localhost:5000/api/");
+            using (var response = await httpClient.GetAsync("Reviews/" + id))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                review = JsonConvert.DeserializeObject<Review>(apiResponse);
+            }
+        }
+        return View(review);
+    }
+    [HttpPost, ActionName("Delete")]
+    public async Task <ActionResult> DeleteConfirmed(int id)
+    {
+        using (var httpClient = new HttpClient())
+        {
+            using (var response = await httpClient.DeleteAsync("http://localhost:5000/api/Reviews/" + id))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+            }
+        } 
+        return RedirectToAction("Index");
+    }
     // [Authorize]
     // [HttpPost, ActionName("DeleteFlavor")]
     // public ActionResult DeleteFlavor(int joinId)
