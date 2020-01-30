@@ -141,30 +141,35 @@ namespace TravelMVC.Controllers
       }
       return View(review);
     }
-    // [Authorize]
-    // public async Task<ActionResult> Edit(int id)
-    // {
-    //   var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    //   var currentUser = await _userManager.FindByIdAsync(userId);
-    //   Treat thisTreat = _db.Treats.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(treats => treats.TreatId == id);
-    //   if (thisTreat == null)
-    //   {
-    //     return RedirectToAction("Details", new {id = id});
-    //   }
-    //   return View(thisTreat);
-    // }
-    // [HttpPost]
-    // public ActionResult Edit(Treat treat, int FlavorId)
-    // {
-    //   TreatFlavor join = _db.TreatFlavor.FirstOrDefault(treatflavor => treatflavor.FlavorId == FlavorId && treatflavor.TreatId == treat.TreatId);
-    //   if (FlavorId != 0 && join == null)
-    //   {
-    //       _db.TreatFlavor.Add(new TreatFlavor() { FlavorId = FlavorId, TreatId = treat.TreatId});
-    //   }
-    //   _db.Entry(treat).State = EntityState.Modified;
-    //   _db.SaveChanges();
-    //   return RedirectToAction("Index");
-    // }
+    [Authorize]
+    public async Task<ActionResult> Edit(int id)
+    {
+        Review review = new Review();
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.BaseAddress = new Uri("http://localhost:5000/api/");
+            using (var response = await httpClient.GetAsync("Reviews/" + id))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                review = JsonConvert.DeserializeObject<Review>(apiResponse);
+            }
+        }
+        return View(review);
+    }
+    [HttpPost]
+    public async Task<ActionResult> Edit(Review review)
+    {
+        using (var httpClient = new HttpClient())
+        {
+    
+            using (var response = await httpClient.PutAsJsonAsync<Review>("http://localhost:5000/api/Reviews/" + review.ReviewId, review))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                ViewBag.Result = "Success";
+            }
+        }
+        return RedirectToAction("Details", new {id = review.ReviewId});
+    }
     // [Authorize]
     // public async Task<ActionResult> AddFlavor(int id)
     // {
