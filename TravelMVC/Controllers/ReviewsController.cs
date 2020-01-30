@@ -170,32 +170,7 @@ namespace TravelMVC.Controllers
         }
         return RedirectToAction("Details", new {id = review.ReviewId});
     }
-    // [Authorize]
-    // public async Task<ActionResult> AddFlavor(int id)
-    // {
-    //   var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    //   var currentUser = await _userManager.FindByIdAsync(userId);
-    //   Treat thisTreat = _db.Treats.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(treats => treats.TreatId == id);
-    //   if (thisTreat == null)
-    //   {
-    //     return RedirectToAction("Details", new {id = id});
-    //   }
-
-    //   ViewBag.FlavorId = new SelectList(_db.Flavors, "FlavorId", "Description");
-    //   return View(thisTreat);
-    // }
-    // [HttpPost]
-    // public ActionResult AddFlavor(Treat treat, int FlavorId)
-    // {
-    //   TreatFlavor join = _db.TreatFlavor.FirstOrDefault(treatflavor => treatflavor.TreatId == treat.TreatId && treatflavor.FlavorId == FlavorId);
-    //   if (FlavorId != 0 && join == null)
-    //   {
-    //       _db.TreatFlavor.Add(new TreatFlavor() {FlavorId = FlavorId, TreatId = treat.TreatId});
-    //   }
-    //   _db.SaveChanges();
-    //   return RedirectToAction("Details", new {id = treat.TreatId});
-    // }
-    //    [Authorize]
+    [Authorize]
     public async Task<ActionResult> Delete(int id)
     {
         Review review = new Review();
@@ -222,14 +197,6 @@ namespace TravelMVC.Controllers
         } 
         return RedirectToAction("Index");
     }
-    // [Authorize]
-    // [HttpPost, ActionName("DeleteFlavor")]
-    // public ActionResult DeleteFlavor(int joinId)
-    // {
-    //   var joinEntry = _db.TreatFlavor.FirstOrDefault(entry => entry.TreatFlavorId == joinId);
-    //   _db.TreatFlavor.Remove(joinEntry);
-    //   _db.SaveChanges();
-    //   return RedirectToAction("Details", new {id = joinEntry.TreatId});
-    // }
+
   }
 }

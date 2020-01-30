@@ -159,31 +159,43 @@ namespace TravelMVC.Controllers
         return RedirectToAction("Details", new {id = destination.DestinationId});
     }
 
-    // [Authorize]
-    // public async Task<ActionResult> AddFlavor(int id)
-    // {
-    //   var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    //   var currentUser = await _userManager.FindByIdAsync(userId);
-    //   Treat thisTreat = _db.Treats.Where(entry => entry.User.Id == currentUser.Id).FirstOrDefault(treats => treats.TreatId == id);
-    //   if (thisTreat == null)
-    //   {
-    //     return RedirectToAction("Details", new {id = id});
-    //   }
+    [Authorize]
+    public async Task<ActionResult> AddReview(int id)
+    {
+        
+        Destination destination = new Destination();
+        using (var httpClient = new HttpClient())
+        {
+            httpClient.BaseAddress = new Uri("http://localhost:5000/api/");
+            using (var response = await httpClient.GetAsync("Destinations/" + id))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                destination = JsonConvert.DeserializeObject<Destination>(apiResponse);
+            }
+        }
+        ViewBag.Destination = destination;
+        return View();
+    }
+    [HttpPost]
+    public async Task<ActionResult> AddReview(Review review, int id)
+    {
+        review.DestinationId = id;
+        if (!ModelState.IsValid)
+          return BadRequest("Not a valid model");
 
-    //   ViewBag.FlavorId = new SelectList(_db.Flavors, "FlavorId", "Description");
-    //   return View(thisTreat);
-    // }
-    // [HttpPost]
-    // public ActionResult AddFlavor(Treat treat, int FlavorId)
-    // {
-    //   TreatFlavor join = _db.TreatFlavor.FirstOrDefault(treatflavor => treatflavor.TreatId == treat.TreatId && treatflavor.FlavorId == FlavorId);
-    //   if (FlavorId != 0 && join == null)
-    //   {
-    //       _db.TreatFlavor.Add(new TreatFlavor() {FlavorId = FlavorId, TreatId = treat.TreatId});
-    //   }
-    //   _db.SaveChanges();
-    //   return RedirectToAction("Details", new {id = treat.TreatId});
-    // }
+        Review newReview = new Review();
+        using (var httpClient = new HttpClient())
+        {
+            StringContent content = new StringContent(JsonConvert.SerializeObject(review), Encoding.UTF8, "application/json");
+    
+            using (var response = await httpClient.PostAsync("http://localhost:5000/api/Reviews", content))
+            {
+                string apiResponse = await response.Content.ReadAsStringAsync();
+                newReview = JsonConvert.DeserializeObject<Review>(apiResponse);
+            }
+        }
+        return RedirectToAction("Details", new {id = review.DestinationId});
+    }
     [Authorize]
     public async Task<ActionResult> Delete(int id)
     {
