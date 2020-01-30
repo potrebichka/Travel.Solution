@@ -2,7 +2,13 @@
     ViewData["Title"] = "Home Page";
 }
 
+@using System.Security.Claims
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to Travel Application</h1>
+    @if (!User.Identity.IsAuthenticated)
+    {
+        <h2>@Html.ActionLink("Register", "Register", "Account", null, new {@class = "tab" })</h2>
+        <h2>@Html.ActionLink("Log in", "Login", "Account", null, new {@class = "tab" })</h2>
+    }
 </div>
