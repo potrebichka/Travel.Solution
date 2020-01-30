@@ -1,0 +1,34 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+@model IEnumerable<TravelMVC.Models.Review>;
+
+<h2>Reviews:</h2>
+@foreach (Review review in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayNameFor(model => model.ReviewId) : @Html.DisplayFor(model => review.ReviewId)
+        </td>
+    <td>
+        @Html.DisplayNameFor(model => model.Rating) : @Html.DisplayFor(model => review.Rating)
+    </td>
+    <td>
+        @if (User.Identity.IsAuthenticated)
+        {
+            @Html.ActionLink("Edit", "Edit", new { id=review.ReviewId }) <span>|</span>
+        }
+        
+        @Html.ActionLink("Details", "Details", new { id=review.ReviewId })
+
+        @if (User.Identity.IsAuthenticated)
+        {
+        <span>|</span> @Html.ActionLink("Delete", "Delete", new { id=review.ReviewId })
+        }
+    </td>
+    </tr>
+    <br>
+}
+
+<h3>@Html.ActionLink("Create a new review", "Create")</h3>
+<h3>@Html.ActionLink("Home", "Index", "Home")</h3>

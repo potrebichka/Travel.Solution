@@ -1,0 +1,42 @@
+@model TravelMVC.Models.Destination
+@using System.Security.Claims
+@using TravelMVC.Models;
+
+<h2>Destination Details</h2>
+<hr />
+<h3>@Html.DisplayNameFor(model => model.Country): @Html.DisplayFor(model => model.Country)</h3>
+<hr/>
+<h3>@Html.DisplayNameFor(model => model.City): @Html.DisplayFor(model => model.City)</h3>
+<hr/>
+<h3>@Html.DisplayNameFor(model => model.Rating): @Html.DisplayFor(model => model.Rating)</h3>
+<hr/>
+@if(@Model.Reviews.Count == 0)
+{
+  <h3>No reviews have been added for this destination</h3>
+}
+else
+{
+  <h4>Reviews:</h4>
+  <ul>
+    @foreach(Review review in Model.Reviews)
+    {
+      <li>@review.Description</li>
+      @* @using (Html.BeginForm("DeleteFlavor", "Treats"))
+      {
+        @Html.Hidden("joinId", @join.TreatFlavorId)
+        <input type="submit" value="delete" class="btn btn-danger" />
+      } *@
+    }
+  </ul>
+}
+<hr/>
+
+@if (User.Identity.IsAuthenticated)
+//&& ViewBag.IsCurrentUse
+{
+  <h3>@Html.ActionLink("Edit Destination", "Edit", new {id = Model.DestinationId} , new {@class = "tab" })</h3>
+  <h3>@Html.ActionLink("Delete Destination", "Delete", new {id = Model.DestinationId}, new {@class = "tab" })</h3>
+  <h3>@Html.ActionLink("Add a Review", "AddReview", new { id = Model.DestinationId }, new {@class = "tab" })</h3>
+}
+
+<h3>@Html.ActionLink("Back to list of destinations", "Index", null, null, new {@class = "tab" })</h3>

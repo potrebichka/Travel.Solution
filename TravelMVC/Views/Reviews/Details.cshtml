@@ -1,0 +1,23 @@
+@model TravelMVC.Models.Review
+@using System.Security.Claims
+@using TravelMVC.Models;
+
+<h2>Review Details</h2>
+<hr />
+<h3>@Html.DisplayNameFor(model => model.ReviewId): @Html.DisplayFor(model => model.ReviewId)</h3>
+<hr/>
+<h3>Review for @Html.DisplayFor(model => model.Destination.Country) , @Html.DisplayFor(model => model.Destination.City)</h3>
+<hr/>
+<h3>@Html.DisplayNameFor(model => model.Rating): @Html.DisplayFor(model => model.Rating)</h3>
+<hr/>
+<h3>@Html.DisplayNameFor(model => model.Description): @Html.DisplayFor(model => model.Description)</h3>
+<hr/>
+
+@if (User.Identity.IsAuthenticated)
+//&& ViewBag.IsCurrentUse
+{
+  <h3>@Html.ActionLink("Edit Review", "Edit", new {id = Model.ReviewId} , new {@class = "tab" })</h3>
+  <h3>@Html.ActionLink("Delete Review", "Delete", new {id = Model.ReviewId}, new {@class = "tab" })</h3>
+}
+
+<h3>@Html.ActionLink("Back to list of reviews", "Index", null, null, new {@class = "tab" })</h3>

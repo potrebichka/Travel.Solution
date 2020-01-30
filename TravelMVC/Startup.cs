@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using TravelMVC.Models;
 using Microsoft.AspNetCore.Identity;
+using Newtonsoft.Json;
 
 namespace TravelMVC
 {
@@ -23,7 +24,9 @@ namespace TravelMVC
 
         public void ConfigureServices(IServiceCollection services)
         {
-        services.AddMvc();
+        services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });;
 
         services.AddEntityFrameworkMySql()
             .AddDbContext<TravelMVCContext>(options => options
